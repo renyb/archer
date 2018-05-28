@@ -113,23 +113,23 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'archer',
-        'USER': 'archer_rw',
-        'PASSWORD': 'archer_rw',
+        'USER': 'root',
+        'PASSWORD': 'admin+1234',
         'HOST': '127.0.0.1',
-        'PORT': '5000'
+        'PORT': '3306'
     }
 }
 
 #inception组件所在的地址
-INCEPTION_HOST = '192.168.1.11'
-INCEPTION_PORT = '6100'
+INCEPTION_HOST = '127.0.0.1'
+INCEPTION_PORT = '6669'
 
 #查看回滚SQL时候会用到，这里要告诉archer去哪个mysql里读取inception备份的回滚信息和SQL.
 #注意这里要和inception组件的inception.conf里的inception_remote_XX部分保持一致.
-INCEPTION_REMOTE_BACKUP_HOST='192.168.1.12'
-INCEPTION_REMOTE_BACKUP_PORT=5621
-INCEPTION_REMOTE_BACKUP_USER='inception'
-INCEPTION_REMOTE_BACKUP_PASSWORD='inception'
+INCEPTION_REMOTE_BACKUP_HOST='127.0.0.1'
+INCEPTION_REMOTE_BACKUP_PORT=3306
+INCEPTION_REMOTE_BACKUP_USER='root'
+INCEPTION_REMOTE_BACKUP_PASSWORD='admin+1234'
 
 # 账户登录失败锁定时间(秒)
 LOCK_TIME_THRESHOLD = 300
