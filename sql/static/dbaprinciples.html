@@ -2,5 +2,76 @@
 
 {% block content %}
 <h4>请认真阅读SQL审核规则：</h4>
-https://github.com/jly8866/archer/raw/master/docs/mysql_db_design_guide.docx
+<div class="col-md-8 column">
+			<text id="sql_content" name="sql_content"  placeholder=""
+           rows=50 required> 
+<h4><b>简介</b></h4>
+持续借鉴,收集并整理一些开发规范和技巧,期望能更充分利用 MySQL 的特性,发挥更好的性能
+<h4> <b>目的</b></h4>
+提供给开发人员参考,方便更有效率的开发
+<h4> <b>范围</b></h4>
+基于 MySQL 做应用开发的人员
+<h4> <b>一 基础规范 </b></h4>
+	1.主库只负责写请求和少量实时读取类请求,大的读取请求移到从库<br>
+	2.历史数据做归档处理,分散业务库的压力<br>
+	3.禁止对业务库大表做在线实时类统计,拒绝大事务,大 SQL,大批量<br>
+	4.单表记录不超过 2000W 行<br>
+	5.禁止使用 select *,只 select 需要的列<br>
+	6.禁止大量计算,多字段分组排序,%前缀模糊查询<br>
+	7.索引列不参与计算,如下写法无法使用索引<br>
+		left(t.CreateTime,10)= '20180306'<br>
+	8.避免 SQL 语句中 where 条件的类型转换<br>
+		select b from a where x=123 #表结构定义 x 位 varchar 类型
+<h4> <b>二 库设计规范</b></h4>
+	1.库字符集默认使用 utf8 编码 <br>
+	2.库名使用业务用途的英文单词组合驼峰命名,小写,长度建议尽量不超过 15<br>
+	3.分库情况下,在库名后面添加数字标识(ent01,ent02)<br>
+<h4> <b>三 表设计规范</b></h4> 
+	1.表字符集默认使用 utf8 编码,如果 emoj 表情符设置为 utf8mb4<br>
+	2.所有表全部使用 Innodb 引擎<br>
+	3.表名使用业务用途的英文单词组合驼峰命名,小写,长度建议尽量不超过 15<br>
+	4.每张表必须要有 comment,最好是中文注明该表的用途<br>
+	5.每张表必须有以下 3 个字段<br>
+		1)Id bigint(20) UNSIGNED NOT NULL PRIMARY KEY (`Id`)<br><br>
+		2)CreateTime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP<br>
+		3)UpdateTime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP<br>
+	6.禁用保留字,如 limit,desc,range 等<br>
+<h4> <b>四 字段设计规范</b></h4> 
+	1.字段字符集默认使用 utf8 编码<br>
+	2.字段名使用业务用途的英文单词组合驼峰命名,小写,长度建议尽量不超过15<br>
+	3.任何字段如果是非负数，必须是 unsigned<br>
+	4.显示约束:所有字段必须定义为 NOT NULL,并且要有默认值, 中文 comment<br>
+	5.选择合适的字段类型,能用 int 的就不用 varchar<br>
+	6.选择合适的字段长度,能用 varchar(20)的就不用 varchar(128)<br>
+	7.存储精确浮点数使用 DECIMAL 替代 FLOAT 和 DOUBLE<br>
+	8.字段无需预留,越少越好<br>
+	9.尽可能的不使用 TEXT， BLOB 类型,必须要用的可拆分到单独表中<br>
+	10.单表字段数量尽量不超过 30 个<br>
+<h4> <b>五 索引规范</b></h4> 
+	1.普通索引按照 idx_字段名称_字段名称命名<br>
+	2.唯一索引按照 uq_字段名称命名<br>
+	3.单个索引中的字段数最好不要超过 3 个<br>
+	4.对长度大于 100 的字段建立索引时,恰当的使用前缀索引<br>
+	5.合理创建联合索引，避免冗余<br>
+		idx_a_b_c 可覆盖 idx_a,idx_a_b6.尽量选择区分度高的列作为索引列<br>
+	7.单表多次 alter 操作合并为一次操作<br>
+<h4> <b>六 行为规范</b></h4> 
+	1.禁止业务高峰期批量更新,查询数据库<br>
+	2.数据库 DDL 及重要 SQL 及早提交 DBA 评审<br>
+	3.批量导入,拉取数据须提前通知 DBA,请求协助观察<br>
+	4.新上 SQL 必须要有 review 过程,有各组 leader 执行,再到 DBA<br>
+	5.推广活动或上线新功能提前通知 DBA，请求压力评估<br>
+	6.不得使用程序账号进行个人行为,分配给个人的权限不能转借<br>
+	7.重要业务库须告知 DBA 重要等级,数据备份及时性要求<br>
+
+<br><br><br><br><br><br>
+
+
+
+</text>
+
+</div>
+
+
+
 {% endblock content %}

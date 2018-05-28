@@ -8,7 +8,15 @@
 		{% csrf_token %}
         <input type="hidden" id="workflowid" name="workflowid"/>
 		<div class="col-md-8 column">
-			<textarea id="sql_content" name="sql_content" class="form-control" data-name="SQL内容" placeholder="请在此提交SQL，请以分号结尾。例如：use test; create table t1(id int)engine=innodb;" rows=20 required></textarea>
+			<textarea id="sql_content" name="sql_content" class="form-control" data-name="SQL内容" placeholder="
+
+            请在此提交SQL，每条SQL必须以分号结尾.
+                1 显示指定库:use test; 
+                2 create table时，必须有主键字段id int unsigned,字段不允许NULL;
+                3 索引命名规范:普通索引idx_字段名称,唯一索引uq_字段名称;
+                4 DDL DML,SQL需要拆分提交;
+                例如：use test; 
+                        create table t1( id int unsigned primary key ) engine=innodb;" rows=20 required></textarea>
 		</div>
 
 		<div class="col-md-4 column">

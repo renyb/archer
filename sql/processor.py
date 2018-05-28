@@ -14,20 +14,20 @@ leftMenuBtnsSuper = (
     {'key': 'admin', 'name': '后台数据管理', 'url': '/admin/', 'class': 'glyphicon glyphicon-list'},
 )
 leftMenuBtnsDoc = (
-    {'key': 'dbaprinciples', 'name': 'SQL审核必读', 'url': '/dbaprinciples/', 'class': 'glyphicon glyphicon-book'},
+    {'key': 'dbaprinciples', 'name': 'SQL开发规范', 'url': '/dbaprinciples/', 'class': 'glyphicon glyphicon-book'},
     {'key': 'charts', 'name': '统计图表展示', 'url': '/charts/', 'class': 'glyphicon glyphicon-file'},
 )
 
-if settings.ENABLE_LDAP:
-    leftMenuBtnsSuper = (
-        {'key': 'masterconfig', 'name': '主库地址配置', 'url': '/admin/sql/master_config/',
-         'class': 'glyphicon glyphicon-user'},
-        {'key': 'userconfig', 'name': '用户权限配置', 'url': '/admin/sql/users/', 'class': 'glyphicon glyphicon-th-large'},
-        {'key': 'ldapsync', 'name': '同步LDAP用户', 'url': '/ldapsync/', 'class': 'glyphicon glyphicon-th-large'},
-        {'key': 'workflowconfig', 'name': '所有工单管理', 'url': '/admin/sql/workflow/',
-         'class': 'glyphicon glyphicon-list-alt'},
-    )
-
+#if settings.ENABLE_LDAP:
+#    leftMenuBtnsSuper = (
+#        {'key': 'masterconfig', 'name': '主库地址配置', 'url': '/admin/sql/master_config/',
+#         'class': 'glyphicon glyphicon-user'},
+#        {'key': 'userconfig', 'name': '用户权限配置', 'url': '/admin/sql/users/', 'class': 'glyphicon glyphicon-th-large'},
+#        {'key': 'ldapsync', 'name': '同步LDAP用户', 'url': '/ldapsync/', 'class': 'glyphicon glyphicon-th-large'},
+#        {'key': 'workflowconfig', 'name': '所有工单管理', 'url': '/admin/sql/workflow/',
+#         'class': 'glyphicon glyphicon-list-alt'},
+#    )
+#
 
 def global_info(request):
     """存放用户，会话信息等."""
