@@ -10,7 +10,7 @@ LDAP_SERVER_POOL = ["42.62.10.155"]
 LDAP_SERVER_PORT = 389
 ADMIN_DN = "cn=Manager,dc=sunlands,dc=com"
 ADMIN_PASSWORD = "secret"
-#添加部门筛选条件
+#添加部门筛选条件限制
 SEARCH_BASE = "ou=10000,dc=sunlands,dc=com"
 
 
