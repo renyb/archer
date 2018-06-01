@@ -21,7 +21,7 @@
 	7.索引列不参与计算,如下写法无法使用索引<br>
 		left(t.CreateTime,10)= '20180306'<br>
 	8.避免 SQL 语句中 where 条件的类型转换<br>
-		select b from a where x=123 #表结构定义 x 位 varchar 类型
+		select b from a where x=123 #表结构定义x为varchar 类型
 <h4> <b>二 库设计规范</b></h4>
 	1.库字符集默认使用 utf8 编码 <br>
 	2.库名使用业务用途的英文单词组合驼峰命名,小写,长度建议尽量不超过 15<br>
@@ -32,7 +32,7 @@
 	3.表名使用业务用途的英文单词组合驼峰命名,小写,长度建议尽量不超过 15<br>
 	4.每张表必须要有 comment,最好是中文注明该表的用途<br>
 	5.每张表必须有以下 3 个字段<br>
-		1)Id bigint(20) UNSIGNED NOT NULL PRIMARY KEY (`Id`)<br><br>
+		1)Id bigint(20) UNSIGNED NOT NULL PRIMARY KEY (`Id`)<br>
 		2)CreateTime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP<br>
 		3)UpdateTime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP<br>
 	6.禁用保留字,如 limit,desc,range 等<br>
