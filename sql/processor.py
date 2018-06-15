@@ -3,6 +3,7 @@ from .models import users
 from django.conf import settings
 
 leftMenuBtnsCommon = (
+    {'key': 'backupinfo', 'name': '主机信息管理', 'url': '/backupinfo/', 'class': 'glyphicon glyphicon-check'},
     {'key': 'allworkflow', 'name': '查看历史工单', 'url': '/allworkflow/', 'class': 'glyphicon glyphicon-home'},
     {'key': 'submitsql', 'name': '发起SQL上线', 'url': '/submitsql/', 'class': 'glyphicon glyphicon-asterisk'},
     {'key': 'sqlquery', 'name': 'SQL在线查询', 'url': '/sqlquery/', 'class': 'glyphicon glyphicon-search'},
@@ -14,6 +15,7 @@ leftMenuBtnsSuper = (
     {'key': 'admin', 'name': '后台数据管理', 'url': '/admin/', 'class': 'glyphicon glyphicon-list'},
 )
 leftMenuBtnsDoc = (
+    
     {'key': 'dbaprinciples', 'name': 'SQL开发规范', 'url': '/dbaprinciples/', 'class': 'glyphicon glyphicon-book'},
     {'key': 'charts', 'name': '统计图表展示', 'url': '/charts/', 'class': 'glyphicon glyphicon-file'},
 )

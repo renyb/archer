@@ -5,7 +5,7 @@ import json
 import time
 import multiprocessing
 from collections import OrderedDict
-
+import pymysql
 from django.db.models import Q
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -36,6 +36,30 @@ def logout(request):
     if request.session.get('login_username', False):
         del request.session['login_username']
     return render(request, 'login.html')
+def getbackupinfo(request):
+    return render(request, 'backup.html')
+def gethosts(request):
+    name=request.GET.get('name','')
+   
+    print(name)
+    dbs=getattr(settings, 'DATABASES')
+    conn_HOST=dbs['default']['HOST']
+    conn_USER=dbs['default']['USER']
+    conn_PASSWORD=dbs['default']['PASSWORD']
+    conn_NAME=dbs['default']['NAME']
+    # 打开数据库连接
+    db = pymysql.connect(conn_HOST,conn_USER,conn_PASSWORD,conn_NAME,charset='utf8mb4' )
+    # 使用cursor()方法获取操作游标 
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    # 使用execute方法执行SQL语句
+    cursor.execute("select  id,em1,em2,GroupName,IsMaster,LocalBackDir,RemoteBackDir  from sql_hosts   " )
+    # 使用 fetchone() 方法获取一条数据
+    data = cursor.fetchall()
+    db.commit()
+    cursor.close()
+    # 关闭数据库连接
+    db.close()
+    return HttpResponse(json.dumps(data))
 
 #首页，也是查看所有SQL工单页面，具备翻页功能
 def allworkflow(request):
