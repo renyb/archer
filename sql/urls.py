@@ -4,8 +4,8 @@ from django.conf.urls import url, include
 from . import views, views_ajax, query
 
 urlpatterns = [
-    url(r'^$', views.submitSql, name='submitSql'),
-    url(r'^index/$', views.allworkflow, name='allworkflow'),
+    url(r'^$', views.allworkflow, name='allworkflow'),
+    url(r'^index/$', views.submitSql, name='submitSql'),
     url(r'^login/$', views.login, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^submitsql/$', views.submitSql, name='submitSql'),
@@ -26,7 +26,6 @@ urlpatterns = [
     url(r'^dbaprinciples/$', views.dbaprinciples, name='dbaprinciples'),
     url(r'^charts/$', views.charts, name='charts'),
     url(r'^backupinfo/$', views.getbackupinfo, name='getbackupinfo'),
-    url(r'^sqlhosts/$', views.gethosts, name='gethosts'),
 
 
     url(r'^authenticate/$', views_ajax.authenticateEntry, name='authenticate'),

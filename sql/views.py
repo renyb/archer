@@ -20,7 +20,7 @@ from .const import Const, WorkflowDict
 from .sendmail import MailSender
 from .inception import InceptionDao
 from .aes_decryptor import Prpcrypt
-from .models import users, master_config, workflow, slave_config, QueryPrivileges
+from .models import users, master_config, workflow, slave_config, QueryPrivileges,sql_host
 from .workflow import Workflow
 
 dao = Dao()
@@ -38,28 +38,7 @@ def logout(request):
     return render(request, 'login.html')
 def getbackupinfo(request):
     return render(request, 'backup.html')
-def gethosts(request):
-    name=request.GET.get('name','')
-   
-    print(name)
-    dbs=getattr(settings, 'DATABASES')
-    conn_HOST=dbs['default']['HOST']
-    conn_USER=dbs['default']['USER']
-    conn_PASSWORD=dbs['default']['PASSWORD']
-    conn_NAME=dbs['default']['NAME']
-    # 打开数据库连接
-    db = pymysql.connect(conn_HOST,conn_USER,conn_PASSWORD,conn_NAME,charset='utf8mb4' )
-    # 使用cursor()方法获取操作游标 
-    cursor = db.cursor(pymysql.cursors.DictCursor)
-    # 使用execute方法执行SQL语句
-    cursor.execute("select  id,em1,em2,GroupName,IsMaster,LocalBackDir,RemoteBackDir  from sql_hosts   " )
-    # 使用 fetchone() 方法获取一条数据
-    data = cursor.fetchall()
-    db.commit()
-    cursor.close()
-    # 关闭数据库连接
-    db.close()
-    return HttpResponse(json.dumps(data))
+
 
 #首页，也是查看所有SQL工单页面，具备翻页功能
 def allworkflow(request):
@@ -161,11 +140,11 @@ def submitSql(request):
     #获取所有审核人，当前登录用户不可以审核
     loginUser = request.session.get('login_username', False)
     reviewMen = users.objects.filter(role='审核人').exclude(username=loginUser)
+    print(reviewMen)
     if len(reviewMen) == 0:
        context = {'errMsg': '审核人为0，请配置审核人'}
        return render(request, 'error.html', context)
     listAllReviewMen = [user.username for user in reviewMen]
-
     context = {'currentMenu':'submitsql', 'dictAllClusterDb':dictAllClusterDb, 'reviewMen':reviewMen}
     return render(request, 'submitSql.html', context)
 
@@ -243,6 +222,7 @@ def autoreview(request):
                     strContent = "发起人：" + engineer + "\n审核人：" + str(listAllReviewMen)  + "\n工单地址：" + url + "\n工单名称： " + workflowName + "\n具体SQL：" + sqlContent
                     objReviewMan = users.objects.get(username=reviewMan)
                     mailSender.sendEmail(strTitle, strContent, [objReviewMan.email])
+                    mailSender.sendEmail(strTitle, strContent, getattr(settings, 'MAIL_REVIEW_DBA_ADDR'))
             else:
                 #不发邮件
                 pass

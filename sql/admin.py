@@ -2,9 +2,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-
+from .models import *
 # Register your models here.
-from .models import users, master_config, slave_config, workflow, WorkflowAudit, WorkflowAuditSetting, DataMaskingColumns, DataMaskingRules
+from .models import users, master_config, slave_config, workflow, WorkflowAudit, WorkflowAuditSetting, DataMaskingColumns, DataMaskingRules,sql_host
 
 
 class master_configAdmin(admin.ModelAdmin):
@@ -92,3 +92,27 @@ class DataMaskingColumnsAdmin(admin.ModelAdmin):
 class DataMaskingRulesAdmin(admin.ModelAdmin):
     list_display = (
         'rule_type', 'rule_regex', 'rule_desc', 'sys_time',)
+
+
+
+# 脱敏规则页面定义
+@admin.register(sql_host)
+class sql_hostAdmin(admin.ModelAdmin):
+    list_display = (
+        'id','em1', 'em2', 'GroupName', 'IsMaster',)
+    search_fields = ['em1', 'em2', 'GroupName',]
+
+
+# 脱敏规则页面定义
+@admin.register(sql_hosts)
+class sql_hostAdmin(admin.ModelAdmin):
+    list_display = (
+        'id','em1', 'em2', 'GroupName', 'IsMaster',)
+    search_fields = ['em1', 'em2', 'GroupName',]
+
+
+
+
+
+
+

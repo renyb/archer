@@ -252,3 +252,45 @@ class DataMaskingRules(models.Model):
         db_table = 'data_masking_rules'
         verbose_name = u'脱敏规则'
         verbose_name_plural = u'脱敏规则'
+
+
+class sql_host(models.Model):
+    id = models.AutoField(primary_key=True)
+    em1 = models.CharField('外网ip', max_length=15)
+    em2 = models.CharField('内网ip', max_length=15)
+    GroupName = models.CharField('业务线', max_length=20)
+    IsMaster = models.IntegerField('主从角色0slave1master2其他',default=2)
+    LocalBackDir = models.CharField('本地备份路径', max_length=100, default='')
+    RemoteBackDir = models.CharField('远程备份路径', max_length=100, default='')
+    create_time = models.DateTimeField('操作时间', auto_now_add=True)
+    update_time = models.DateTimeField('操作时间', auto_now=True)
+    
+    def __str__(self):
+        return self.em2
+    class Meta:
+        db_table = 'sql_host'
+        verbose_name = u'服务器信息管理'
+        verbose_name_plural = u'服务器信息管理'
+
+
+class sql_hosts(models.Model):
+    id = models.AutoField(primary_key=True)
+    em1 = models.CharField('外网ip', max_length=15)
+    em2 = models.CharField('内网ip', max_length=15)
+    GroupName = models.CharField('业务线', max_length=20)
+    IsMaster = models.IntegerField('主从角色0slave1master2其他',default=2)
+    LocalBackDir = models.CharField('本地备份路径', max_length=100, default='')
+    RemoteBackDir = models.CharField('远程备份路径', max_length=100, default='')
+    create_time = models.DateTimeField('操作时间', auto_now_add=True)
+    update_time = models.DateTimeField('操作时间', auto_now=True)
+    
+    def __str__(self):
+        return self.em2
+    class Meta:
+        db_table = 'sql_hosts'
+        verbose_name = u'服务器信息管理1'
+        verbose_name_plural = u'服务器信息管理1'
+
+
+
+

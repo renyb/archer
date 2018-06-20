@@ -13,7 +13,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 if settings.ENABLE_LDAP:
-    from django_auth_ldap.backend import LDAPBackend
+    from .ldap_auth  import ldap_auth
 
 from .dao import Dao
 from .const import Const
@@ -22,6 +22,7 @@ from .aes_decryptor import Prpcrypt
 from .models import users, master_config, workflow
 from sql.sendmail import MailSender
 import logging
+
 
 logger = logging.getLogger('default')
 mailSender = MailSender()
@@ -85,20 +86,19 @@ def authenticateEntry(request):
     else:
         strUsername = request.POST['username']
         strPassword = request.POST['password']
-
     lockCntThreshold = settings.LOCK_CNT_THRESHOLD
     lockTimeThreshold = settings.LOCK_TIME_THRESHOLD
-
     if settings.ENABLE_LDAP:
-        ldap = LDAPBackend()
-        user = ldap.authenticate(username=strUsername, password=strPassword)
+        #ldap = LDAPBackend()
+        #user = ldap.authenticate(username=strUsername, password=strPassword)
+        user = ldap_auth(username=strUsername, password=strPassword)
         if strUsername in login_failure_counter and login_failure_counter[strUsername]["cnt"] >= lockCntThreshold and (
             datetime.datetime.now() - login_failure_counter[strUsername][
             "last_failure_time"]).seconds <= lockTimeThreshold:
             log_mail_record('user:{},login failed, account locking...'.format(strUsername))
             result = {'status': 3, 'msg': '登录失败超过5次，该账号已被锁定5分钟!', 'data': ''}
             return HttpResponse(json.dumps(result), content_type='application/json')
-        if user and user.is_active:
+        if user :
             request.session['login_username'] = strUsername
             result = {'status': 0, 'msg': 'ok', 'data': ''}
             return HttpResponse(json.dumps(result), content_type='application/json')
