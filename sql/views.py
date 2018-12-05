@@ -14,6 +14,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
+from django.core import serializers
 
 from .dao import Dao
 from .const import Const, WorkflowDict
@@ -22,6 +23,18 @@ from .inception import InceptionDao
 from .aes_decryptor import Prpcrypt
 from .models import users, master_config, workflow, slave_config, QueryPrivileges,sql_host
 from .workflow import Workflow
+from datetime import datetime, date
+import json
+
+class CJsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)
+
 
 dao = Dao()
 inceptionDao = InceptionDao()
@@ -39,6 +52,65 @@ def logout(request):
 def getbackupinfo(request):
     return render(request, 'backup.html')
 
+class ComplexEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+def gethostlist(request):
+
+    dbs=getattr(settings, 'DATABASES')
+    conn_HOST=dbs['default']['HOST']
+    conn_USER=dbs['default']['USER']
+    conn_PASSWORD=dbs['default']['PASSWORD']
+    conn_NAME=dbs['default']['NAME']
+    # 打开数据库连接
+    db = pymysql.connect(conn_HOST,conn_USER,conn_PASSWORD,conn_NAME,charset='utf8mb4' )
+    # 使用cursor()方法获取操作游标 
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    # 使用execute方法执行SQL语句
+    sql = "select  id,idcinfo,hostname,osinfo,ipinfo,modelinfo,usefor,memoryinfo,diskinfo,cpuinfo,snnum,buytime,brandinfo,status,repairinfo from sql_hostlist ;" 
+    cursor.execute(sql)    # 使用 fetchone() 方法获取一条数据
+    data = cursor.fetchall()
+    db.commit()
+    cursor.close()
+    # 关闭数据库连接
+    db.close()
+
+    return HttpResponse(json.dumps(data, indent=2, cls=CJsonEncoder, ensure_ascii=False))
+
+
+def tree(request):   
+    return render(request, 'tree.html')
+
+def gethosts(request):
+    name=request.GET.get('name','')
+   
+    print(name)
+    dbs=getattr(settings, 'DATABASES')
+    conn_HOST=dbs['default']['HOST']
+    conn_USER=dbs['default']['USER']
+    conn_PASSWORD=dbs['default']['PASSWORD']
+    conn_NAME=dbs['default']['NAME']
+    # 打开数据库连接
+    db = pymysql.connect(conn_HOST,conn_USER,conn_PASSWORD,conn_NAME,charset='utf8mb4' )
+    # 使用cursor()方法获取操作游标 
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    # 使用execute方法执行SQL语句
+    cursor.execute("select  id,em1,em2,GroupName,IsMaster,LocalBackDir,RemoteBackDir  from sql_hosts   " )
+    # 使用 fetchone() 方法获取一条数据
+    data = cursor.fetchall()
+    db.commit()
+    cursor.close()
+    # 关闭数据库连接
+    db.close()
+    return HttpResponse(json.dumps(data))
+def slowlog(request):
+   return HttpResponseRedirect("/sqlhosts/") 
 
 #首页，也是查看所有SQL工单页面，具备翻页功能
 def allworkflow(request):
@@ -158,7 +230,6 @@ def autoreview(request):
     reviewMan = request.POST['review_man']
     subReviewMen = request.POST.get('sub_review_man', '')
     listAllReviewMen = (reviewMan, subReviewMen)
-
     #服务器端参数验证
     if sqlContent is None or workflowName is None or clusterName is None or isBackup is None or reviewMan is None:
         context = {'errMsg': '页面提交参数可能为空'}
@@ -175,7 +246,6 @@ def autoreview(request):
         return render(request, 'error.html', context)
     #要把result转成JSON存进数据库里，方便SQL单子详细信息展示
     jsonResult = json.dumps(result)
-
     #遍历result，看是否有任何自动审核不通过的地方，一旦有，则为自动审核不通过；没有的话，则为等待人工审核状态
     workflowStatus = Const.workflowStatus['manreviewing']
     for row in result:
@@ -186,7 +256,6 @@ def autoreview(request):
         elif re.match(r"\w*comments\w*", row[4]):
             workflowStatus = Const.workflowStatus['autoreviewwrong']
             break
-
     #存进数据库里
     engineer = request.session.get('login_username', False)
     if not workflowid:
@@ -205,28 +274,27 @@ def autoreview(request):
     Workflow.execute_result = ''
     Workflow.save()
     workflowId = Workflow.id
-
     #自动审核通过了，才发邮件
     if workflowStatus == Const.workflowStatus['manreviewing']:
         #如果进入等待人工审核状态了，则根据settings.py里的配置决定是否给审核人发一封邮件提醒.
         if hasattr(settings, 'MAIL_ON_OFF') == True:
             if getattr(settings, 'MAIL_ON_OFF') == "on":
                 url = _getDetailUrl(request) + str(workflowId) + '/'
-
                 #发一封邮件
                 strTitle = "新的SQL上线工单提醒 # " + str(workflowId)
                 objEngineer = users.objects.get(username=engineer)
+                strContent = "发起人：" + engineer + "\n审核人：" + str(listAllReviewMen)  + "\n工单地址：" + url + "\n工单名称： " + workflowName + "\n具体SQL：" + sqlContent
+                mailSender.sendEmail(strTitle, strContent, [objEngineer.email])
                 for reviewMan in listAllReviewMen:
                     if reviewMan == "":
                         continue
                     strContent = "发起人：" + engineer + "\n审核人：" + str(listAllReviewMen)  + "\n工单地址：" + url + "\n工单名称： " + workflowName + "\n具体SQL：" + sqlContent
                     objReviewMan = users.objects.get(username=reviewMan)
-                    mailSender.sendEmail(strTitle, strContent, [objReviewMan.email])
                     mailSender.sendEmail(strTitle, strContent, getattr(settings, 'MAIL_REVIEW_DBA_ADDR'))
             else:
                 #不发邮件
                 pass
-
+    
     return HttpResponseRedirect('/detail/' + str(workflowId) + '/')
 
 #展示SQL工单详细内容，以及可以人工审核，审核通过即可执行

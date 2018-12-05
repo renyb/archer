@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h4>  yep  let`s fly </h4>
+	<div class="panel-body" style="padding-bottom:0px;">
+    
+        <table id="tb_departments"></table>
+    </div>
+
+{% endblock content %}
+
+
+
+{% block js %}
+<script>
+	 $(function () {
+
+    //1.初始化Table
+    var oTable = new TableInit();
+    oTable.Init();
+
+    //2.初始化Button的点击事件
+    var oButtonInit = new ButtonInit();
+    oButtonInit.Init();
+
+});
+
+
+var TableInit = function () {
+    var oTableInit = new Object();
+    //初始化Table
+    oTableInit.Init = $('#tb_departments').bootstrapTable({
+                url: '/gethostlist/',
+                method: 'get',
+                contentType: 'application/x-www-form-urlencoded',
+                queryParams: function (params) { // 请求服务器数据时发送的参数，可以在这里添加额外的查询参数，返回false则终止请求
+
+                   return {
+                  pageSize: params.limit, // 每页要显示的数据条数
+                  offset: params.offset, // 每页显示数据的开始行号
+                  //name: $("#txt_search_departmentname").val(), 
+                  //statu: $("#txt_search_statu").val(),
+                  //search:params.search
+
+                 }
+                 },
+                toolbar: "#toolbar",
+                sidePagination: "true",
+                striped: true, // 是否显示行间隔色
+                search : "true",
+                uniqueId: "ID",
+                pageSize: "1",
+                pageSize: 20,                       //每页的录行数（*）
+                pageList: [5,10, 25, 50, 100],        //可供选择的每页的行数（*）
+                pagination: true, // 是否分页
+                sortable: true, // 是否启用排序
+                showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                showExport: true,                     //是否显示导出
+                exportDataType: "basic",              //basic', 'all', 'selected'.
+                columns: [{
+                checkbox: true
+            },{
+                        field: 'id',
+                        title: 'ID',
+                        hidden: true
+                    },
+                    {
+                        field: 'idcinfo',
+                        title: '机房信息'
+                    },
+                    {
+                        field: 'osinfo',
+                        title: '外网IP'
+                    },
+                     {
+                        field: 'ipinfo',
+                        title: '内网IP'
+                    },
+                    {
+                        field: 'hostname',
+                        title: '主机名称'
+                    },
+                    {
+                        field: 'modelinfo',
+                        title: '型号'
+                    },
+                     {
+                        field: 'usefor',
+                        title: '业务线'
+                    },
+                    {
+                        field: 'status',
+                        title: '主机状态',
+                        formatter: function (value, row, index) {
+                        if ( value==1 ) {
+                            return "<span class='label label-success' </span>启用";
+                        }
+                        else if ( value==0 ) {
+                            return "<span class='label label-primary' </span>未启用";
+                        }
+                        else {
+                            return ' '
+                        }
+                    }
+                    },
+                    {
+                        field: 'cpuinfo',
+                        title: 'CPU信息'
+                    },
+                    {
+                        field: 'diskinfo',
+                        title: '磁盘信息',
+                       
+                    },
+                    {
+                        field: 'memoryinfo',
+                        title: '内存信息'
+                    },
+                    {
+                        field: 'brandinfo',
+                        title: '密码',
+                       
+                    },
+                     {
+                        field: 'snnum',
+                        title: '序列号'
+                    },
+                    {
+                        field: 'buytime',
+                        title: '购买时间'
+                    },
+                    {
+                        field: 'repairinfo',
+                        title: '保修信息',
+                        formatter: function (value, row, index) {
+                        if ( value==1 ) {
+                            return "<span class='label label-success' </span>在保";
+                        }
+                        else if ( value==0 ) {
+                            return "<span class='label label-primary' </span>过保";
+                        }
+                        else {
+                            return ' '
+                        }
+                       }
+                    },
+
+                ]
+            });
+            //操作栏的格式化
+
+    
+    return oTableInit;
+};
+
+
+var ButtonInit = function () {
+    var oInit = new Object();
+    var postdata = {};
+
+    oInit.Init = function () {
+        //初始化页面上面的按钮事件
+    };
+
+    return oInit;
+};
+
+</script>
+
+{% endblock %}

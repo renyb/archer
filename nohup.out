@@ -1,0 +1,14 @@
+Performing system checks...
+
+System check identified no issues (0 silenced).
+August 23, 2018 - 18:28:19
+Django version 1.8.17, using settings 'archer.settings'
+Starting development server at http://0.0.0.0:8080/
+Quit the server with CONTROL-C.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+August 23, 2018 - 18:28:32
+Django version 1.8.17, using settings 'archer.settings'
+Starting development server at http://0.0.0.0:8888/
+Quit the server with CONTROL-C.

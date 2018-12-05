@@ -313,6 +313,7 @@
         //将数据通过ajax提交给后端进行检查
         function sqlquery(sql) {
             var columns = [];
+            //获取鼠标选择的部分sql
             var select_sqlContent = editor.session.getTextRange(editor.getSelectionRange());
             if (select_sqlContent) {
                 sqlContent = select_sqlContent

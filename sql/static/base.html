@@ -63,6 +63,11 @@
 						<a href="{{menu.url}}" class="list-group-item"
 					{% endif %}
 
+					{% if menu.key == 'slowlog' %}
+						<a href="www.baidu.com" class="list-group-item active"
+					{% endif %}
+
+
 					{% if menu.key == 'masterconfig' or menu.key == 'userconfig' or menu.key == 'workflowconfig' %}
 						target="_blank"><span class="{{menu.class}}">&nbsp;{{menu.name}}</span></a>
 					{% else %}

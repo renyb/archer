@@ -9,6 +9,7 @@ leftMenuBtnsCommon = (
     {'key': 'sqlquery', 'name': 'SQL在线查询', 'url': '/sqlquery/', 'class': 'glyphicon glyphicon-search'},
     {'key': 'queryapply', 'name': '查询权限管理', 'url': '/queryapplylist/', 'class': 'glyphicon glyphicon-eye-open'},
     {'key': 'workflow', 'name': '工单审核管理', 'url': '/workflow/', 'class': 'glyphicon glyphicon-shopping-cart'},
+    {'key': 'slowlog', 'name': '慢查询管理', 'url': 'http://172.16.100.216:9000/', 'class': 'glyphicon glyphicon-shopping-cart'},
 
 )
 leftMenuBtnsSuper = (
